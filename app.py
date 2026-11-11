@@ -20,12 +20,7 @@ st.subheader("Enter Occupation Details")
 user_input = {}
 
 for feature in features:
-    if df[feature].dtype == 'object':
-        options = sorted(df[feature].dropna().unique().tolist())
-        user_input[feature] = st.selectbox(
-            feature.replace('_', ' ').title(), options
-        )
-    else:
+    if pd.api.types.is_numeric_dtype(df[feature]):
         default_value = float(df[feature].median())
         min_value = float(df[feature].min())
         max_value = float(df[feature].max())
@@ -35,6 +30,11 @@ for feature in features:
             min_value=min_value,
             max_value=max_value,
             value=default_value
+        )
+    else:
+        options = sorted(df[feature].dropna().unique().tolist())
+        user_input[feature] = st.selectbox(
+            feature.replace('_', ' ').title(), options
         )
 
 if st.button("Predict AI Exposure Level"):
